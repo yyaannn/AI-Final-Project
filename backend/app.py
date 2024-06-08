@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import text_generation
+import BERT_VADER
 
 app = Flask(__name__)
 
@@ -19,13 +20,32 @@ def form():
 def submit():
     message = request.form['message']
     messages.append(f"You: {message}")
+    print(f"input: {message}")
 
-    ''' sentiment analysis here '''
+    # sentiment analysis
+    updated_message, score = BERT_VADER.replace_negative_words(message)
     
-    prompts.append(f"Please rewrite the following sentence for precise expression:\n{message}")
+    prompts.append(f"Please rewrite the following sentence for precise expression:\n{updated_message}")
+    print(f"updated_message: {updated_message}")
+    print(f"score: {score}")
+
     response1 = text_generation.handle_user_input(prompts)
     response2 = text_generation.handle_user_input(prompts)
-    messages.append("Your Mood:\nWonderful/Normal/Dangerous...")
+
+    # mood
+    mood = ""
+    if score >= 0.6:
+        mood = "Wonderful"
+    elif score >= 0.2:
+        mood = "Good"
+    elif score >= -0.2:
+        mood = "Normal"
+    elif score >= -0.6:
+        mood = "Bad"
+    else:
+        mood = "Dangerous"
+
+    messages.append(f"Your Mood: {mood}")
     return render_template('form.html', messages=messages, response1=response1, response2=response2)
 
 # user selects one response
