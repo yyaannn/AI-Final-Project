@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">What are you thinking about?</div>
+        <div class="chat-messages" id="chat-messages">
+            <ul>
+                {% for line in messages %}
+                    {% if line.startswith('You:') %}
+                        <li class="user-message"><span>{{ line }}</span></li>
+                    {% else %}
+                        <li class="response-message"><span>{{ line }}</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="chat-input">
+            <form action="{{ url_for('submit') }}" method="post">
+                <input type="text" id="message" name="message" placeholder="Type something...">
+                <input type="submit" value="Send">
+            </form>
+        </div>
+
+        {% if response1 and response2 %}
+        <div class="response-buttons">
+            <p>Which response do you prefer?</p>
+            <form action="{{ url_for('select') }}" method="post">
+                <button type="submit" name="response" value="{{ response1 }}">{{ response1 }}</button>
+                <button type="submit" name="response" value="{{ response2 }}">{{ response2 }}</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        window.onload = function() {
+            var chatMessages = document.getElementById("chat-messages");
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+    </script>
+</body>
+</html>
