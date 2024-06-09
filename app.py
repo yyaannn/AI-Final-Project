@@ -49,7 +49,7 @@ def submit():
 
     form_html = render_template('form.html', messages=messages,response1=response1, response2=response2)
 
-    return jsonify(html=form_html)
+    return jsonify(form_html=form_html)
 
 # user selects one response
 @app.route('/select', methods=['POST'])

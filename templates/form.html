@@ -39,6 +39,12 @@
         {% endif %}
     </div>
     <script>
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        window.onload = scrollToBottom;
+
         document.querySelector('#my-form').addEventListener('submit', function(e) {
             e.preventDefault();  // 阻止默认提交行为
 
@@ -53,11 +59,9 @@
                 document.querySelector('.loader').style.display = 'none';
 
                 // Update the chat messages
-                document.querySelector('.chat-container').innerHTML = data.html;
+                document.querySelector('html').innerHTML = data.form_html;
 
-                // Scroll to the bottom of the chat
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
+                scrollToBottom();
             });
         });
     </script>
