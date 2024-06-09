@@ -1,0 +1,9 @@
+<ul>
+    {% for line in messages %}
+        {% if line.startswith('You:') %}
+            <li class="user-message"><span>{{ line }}</span></li>
+        {% else %}
+            <li class="response-message"><span>{{ line }}</span></li>
+        {% endif %}
+    {% endfor %}
+</ul>

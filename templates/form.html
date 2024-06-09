@@ -9,6 +9,7 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">What are you thinking about?</div>
+        <div class="loader" >Loading...</div>
         <div class="chat-messages" id="chat-messages">
             <ul>
                 {% for line in messages %}
@@ -21,7 +22,7 @@
             </ul>
         </div>
         <div class="chat-input">
-            <form action="{{ url_for('submit') }}" method="post">
+            <form id="my-form">
                 <input type="text" id="message" name="message" placeholder="Type something...">
                 <input type="submit" value="Send">
             </form>
@@ -38,10 +39,27 @@
         {% endif %}
     </div>
     <script>
-        window.onload = function() {
-            var chatMessages = document.getElementById("chat-messages");
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
+        document.querySelector('#my-form').addEventListener('submit', function(e) {
+            e.preventDefault();  // 阻止默认提交行为
+
+            // start animation
+            document.querySelector('.loader').style.display = 'block';
+
+            fetch('/submit', {
+                method: 'POST',
+                body: new FormData(document.querySelector('#my-form')),
+            }).then(response => response.json()).then(data => {
+                // disable animation
+                document.querySelector('.loader').style.display = 'none';
+
+                // Update the chat messages
+                document.querySelector('.chat-container').innerHTML = data.html;
+
+                // Scroll to the bottom of the chat
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            });
+        });
     </script>
 </body>
 </html>
